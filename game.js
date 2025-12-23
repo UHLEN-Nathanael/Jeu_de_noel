@@ -41,11 +41,11 @@ btnContinue.addEventListener("click", () => {
 
   const LEVELS = [
   null,
-  { rows: 4, cols: 9, ballSpeed: 6.0, gap: 10, pattern: 'simple' },
-  { rows: 5, cols: 10, ballSpeed: 6.0, gap: 9, pattern: 'double' },
-  { rows: 6, cols: 11, ballSpeed: 6.5, gap: 8, pattern: 'double+grey' },
-  { rows: 6, cols: 12, ballSpeed: 6.5, gap: 7, pattern: 'hard' },
-  { rows: 7, cols: 12, ballSpeed: 7.0, gap: 6, pattern: 'hard+grey' },
+  { rows: 4, cols: 9, ballSpeed: 3.0, gap: 10, pattern: 'simple' },
+  { rows: 5, cols: 10, ballSpeed: 3.0, gap: 9, pattern: 'double' },
+  { rows: 6, cols: 11, ballSpeed: 3.5, gap: 8, pattern: 'double+grey' },
+  { rows: 6, cols: 12, ballSpeed: 3.5, gap: 7, pattern: 'hard' },
+  { rows: 7, cols: 12, ballSpeed: 4.0, gap: 6, pattern: 'hard+grey' },
 ];
 
 
@@ -331,3 +331,4 @@ for(const b of bricks){
   loop();
 
 })();
+
