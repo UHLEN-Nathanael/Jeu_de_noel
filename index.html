@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Casse-briques Noël</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="wrap">
+    <!-- Header avec HUD -->
+    <header class="topbar">
+      <h1>Joyeux Noël mon Papa</h1>
+      <div class="hud">
+        <span id="level">Niveau: 1/5</span>
+        <span id="lives">Vies: 3</span>
+        <span id="score">Score: 0</span>
+      </div>
+    </header>
+
+    <!-- Décorations Noël -->
+<div class="decor-left">
+  <img src="tree.png" alt="Sapin de Noël" />
+</div>
+<div class="decor-right">
+  <img src="santa.png" alt="Père Noël" />
+</div>
+
+    <!-- Canvas du jeu -->
+    <canvas id="game" width="800" height="520"></canvas>
+
+    <!-- Overlay -->
+    <div id="overlay" class="overlay hidden">
+      <div class="card">
+        <h2 id="overlayTitle">Pause</h2>
+        <p id="overlayText">Appuie sur Espace pour reprendre.</p>
+        <div class="buttons">
+          <button id="btnContinue" class="btn">Continuer</button>
+          <button id="btnRestart" class="btn">Recommencer</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
