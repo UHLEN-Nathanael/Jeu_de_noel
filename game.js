@@ -14,10 +14,7 @@
   const btnQCM = document.getElementById("btnQCM");
 
   // Mise en forme bouton QCM comme les autres
-  btnQCM.style.display = "inline-block";
-  btnQCM.style.padding = "10px 20px";
-  btnQCM.style.margin = "5px";
-  btnQCM.style.fontSize = "16px";
+  btnQCM.style.display = "none";
 
   const GAME = {
     level: 1,
@@ -64,7 +61,7 @@
 
   const LEVELS = [
     null,
-    { rows: 4, cols: 9, ballSpeed: 4.0, gap: 10, pattern: 'simple' },
+    { rows: 4, cols: 9, ballSpeed: 7.0, gap: 10, pattern: 'simple' },
     { rows: 5, cols: 10, ballSpeed: 4.0, gap: 9, pattern: 'double' },
     { rows: 6, cols: 11, ballSpeed: 4.5, gap: 8, pattern: 'double+grey' },
     { rows: 6, cols: 12, ballSpeed: 4.5, gap: 7, pattern: 'hard' },
@@ -130,6 +127,7 @@
   }
 
   function startLevel(level) {
+    GAME.running = true;
     GAME.level = level;
     paddle.x = canvas.width/2 - paddle.w/2;
     paddle.vx = 0;
@@ -142,22 +140,27 @@
   }
 
   // --- Overlay ---
-  function showOverlay(title, text, type = "pause") {
-    overlayTitle.textContent = title;
-    overlayText.textContent = text;
+function showOverlay(title, text, type = "pause") {
+  overlayTitle.textContent = title;
+  overlayText.textContent = text;
 
-    if (type === "pause") {
-      btnContinue.style.display = "inline-block";
-      btnRestart.style.display = "none";
-      btnOpen.style.display = "none";
-    } else if(type === "restart") {
-      btnRestart.style.display = "inline-block";
-      btnContinue.style.display = "none";
-      btnOpen.style.display = "none";
-    }
+  btnContinue.style.display = "none";
+  btnRestart.style.display = "none";
+  btnOpen.style.display = "none";
 
-    overlay.classList.remove("hidden");
+  if (type === "pause") {
+    btnContinue.style.display = "inline-block";
+  } 
+  else if (type === "restart") {
+    btnRestart.style.display = "inline-block";
+    btnQCM.style.display = "inline-block";
+  } 
+  else if (type === "end") {
+    btnOpen.style.display = "inline-block";
   }
+
+  overlay.classList.remove("hidden");
+}
 
   function hideOverlay() {
     overlay.classList.add("hidden");
@@ -208,7 +211,7 @@ if (e.code === "Space") {
     GAME.launched = true;
   } else {
     GAME.paused = true;
-    showOverlay("Pause", "Appuie sur Espace pour reprendre");
+    showOverlay("Pause", "Appuie sur Espace pour reprendre", "pause");
   }
 }
 
@@ -223,7 +226,8 @@ btnRestart.style.display = "none";
 
         showOverlay(
             "Fin",
-            "Bravo mon gros, tu es arrivé à la fin. Tu as enfin le droit à ton cadeau !"
+            "Bravo mon gros, tu es arrivé à la fin. Tu as enfin le droit à ton cadeau !",
+            "end"
         );
 
         // Ne pas mettre GAME.levelCompleted = true ici
@@ -284,9 +288,14 @@ btnRestart.style.display = "none";
         else if(minOverlap === overlapBottom) ball.vy = Math.abs(ball.vy);
 
         b.hp--;
-        if(b.hp <= 0){ b.alive = false; GAME.score += 10*GAME.level; }
-        else { GAME.score += 5*GAME.level; }
-
+        if (b.hp !== Infinity) {
+  if (b.hp <= 0) {
+    b.alive = false;
+    GAME.score += 5 * GAME.level;
+  } else {
+    GAME.score += 10 * GAME.level;
+  }
+}
         normalizeBallSpeed(LEVELS[GAME.level].ballSpeed);
         updateHUD();
       }
@@ -295,7 +304,8 @@ btnRestart.style.display = "none";
     if(ball.y-ball.r>canvas.height){
       GAME.lives--; updateHUD();
       if(GAME.lives<=0){
-        GAME.running=false; GAME.paused=true;
+        GAME.running=false; 
+        GAME.paused=true;
         showOverlay("Perdu","Tu n'as plus de vies. Clique sur Recommencer", "restart");
         return;
       }
@@ -318,7 +328,8 @@ if (remaining === 0) {
     btnOpen.style.display = "none";
     showOverlay(
       "Niveau terminé",
-      `Bravo ! Appuie sur Espace ou Continuer pour passer au niveau ${GAME.level + 1}`
+      `Bravo ! Appuie sur Espace ou Continuer pour passer au niveau ${GAME.level + 1}`,
+      "pause"
     );
   } else {
     btnRestart.style.display = "none";
@@ -326,7 +337,8 @@ if (remaining === 0) {
     btnOpen.style.display = "inline-block";
     showOverlay(
       "Fin",
-      "Bravo ! Tu as terminé le jeu ! Clique sur Ouvrir pour ton cadeau."
+      "Bravo ! Tu as terminé le jeu ! Clique sur Ouvrir pour ton cadeau.",
+"end"
     );
   }
 }
@@ -368,12 +380,34 @@ if (remaining === 0) {
 
     function showQuestion() {
       qcmOverlay.innerHTML = "";
-      if(index >= Math.min(5, QUESTIONS.length)) {
-        GAME.lives += correctCount;
-        updateHUD();
-        document.body.removeChild(qcmOverlay);
-        return;
-      }
+      if (index >= Math.min(5, QUESTIONS.length)) {
+  GAME.lives += correctCount;
+  updateHUD();
+  document.body.removeChild(qcmOverlay);
+
+  if (GAME.lives > 0) {
+    // Reprise du jeu
+    GAME.running = true;
+    GAME.paused = true;
+    resetBallOnPaddle();
+    btnQCM.style.display = "none";
+    showOverlay(
+      "Bonne nouvelle",
+      `Tu gagnes ${correctCount} vie(s). Appuie sur Espace pour reprendre.`,
+      "pause"
+    );
+  } else {
+    // Échec définitif
+    btnQCM.style.display = "none";
+    showOverlay(
+      "Perdu",
+      "Le QCM n'a pas suffi. Clique sur Recommencer.",
+      "restart"
+    );
+  }
+
+  return;
+}
       const q = QUESTIONS[index];
       const qEl = document.createElement("div");
       qEl.textContent = q.q;
