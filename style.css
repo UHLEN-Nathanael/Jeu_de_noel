@@ -89,6 +89,11 @@ canvas {
   transform: translateY(1px);
 }
 
+#btnOpen {
+  display: none;
+}
+
+
 /* ===================== */
 /* OVERLAY               */
 /* ===================== */
