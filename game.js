@@ -61,7 +61,7 @@
 
   const LEVELS = [
     null,
-    { rows: 4, cols: 9, ballSpeed: 7.0, gap: 10, pattern: 'simple' },
+    { rows: 4, cols: 9, ballSpeed: 4.0, gap: 10, pattern: 'simple' },
     { rows: 5, cols: 10, ballSpeed: 4.0, gap: 9, pattern: 'double' },
     { rows: 6, cols: 11, ballSpeed: 4.5, gap: 8, pattern: 'double+grey' },
     { rows: 6, cols: 12, ballSpeed: 4.5, gap: 7, pattern: 'hard' },
@@ -328,7 +328,7 @@ if (remaining === 0) {
     btnOpen.style.display = "none";
     showOverlay(
       "Niveau terminé",
-      `Bravo ! Appuie sur Espace ou Continuer pour passer au niveau ${GAME.level + 1}`,
+      `Bravo ! Appuie sur Continuer pour passer au niveau ${GAME.level + 1}`,
       "pause"
     );
   } else {
@@ -472,3 +472,4 @@ if (remaining === 0) {
   startLevel(1);
   loop();
 })();
+
